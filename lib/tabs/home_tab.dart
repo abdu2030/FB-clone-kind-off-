@@ -6,12 +6,40 @@ class FeedTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: const [
-        _CreatePostBox(),
-        SizedBox(height: 8),
-        _StoriesSection(),
-        SizedBox(height: 8),
-        _PostCard(),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      children: [
+        const _CreatePostBox(),
+        const SizedBox(height: 8),
+        const _StoriesSection(),
+        const SizedBox(height: 8),
+        // Sample posts with images
+        _PostCard(
+          userName: 'Alice Johnson',
+          timeAgo: '2 hr',
+          content:
+              'Had a great hike today! The view at the top was worth every step.',
+          imageUrl: 'https://picsum.photos/seed/pic1/600/300',
+          likes: 42,
+          comments: 5,
+        ),
+        const SizedBox(height: 8),
+        _PostCard(
+          userName: 'Tom Rivera',
+          timeAgo: '4 hr',
+          content: 'Trying out a new recipe tonight — fingers crossed!',
+          imageUrl: 'https://picsum.photos/seed/pic2/600/300',
+          likes: 18,
+          comments: 3,
+        ),
+        const SizedBox(height: 8),
+        _PostCard(
+          userName: 'Maya Lee',
+          timeAgo: 'Yesterday',
+          content: 'Throwback to last summer. Can we go back already?',
+          imageUrl: 'https://picsum.photos/seed/pic3/600/300',
+          likes: 128,
+          comments: 26,
+        ),
       ],
     );
   }
@@ -24,26 +52,46 @@ class _CreatePostBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           const CircleAvatar(child: Icon(Icons.person)),
           const SizedBox(width: 12),
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: const Text(
-                "What's on your mind?",
-                style: TextStyle(color: Colors.grey),
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade200),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Text(
+                  "What's on your mind?",
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
             ),
           ),
           const SizedBox(width: 8),
-          const Icon(Icons.photo_library, color: Colors.green),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.photo_library),
+            color: Colors.green[700],
+          ),
         ],
       ),
     );
@@ -171,98 +219,132 @@ class _StoryCard extends StatelessWidget {
 }
 
 class _PostCard extends StatelessWidget {
-  const _PostCard();
+  final String userName;
+  final String timeAgo;
+  final String content;
+  final String? imageUrl;
+  final int likes;
+  final int comments;
+
+  const _PostCard({
+    required this.userName,
+    required this.timeAgo,
+    required this.content,
+    this.imageUrl,
+    this.likes = 0,
+    this.comments = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      color: Colors.white,
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            leading: const CircleAvatar(child: Icon(Icons.person)),
-            title: const Text(
-              'User Name',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: const Text('4d · Public'),
-            trailing: IconButton(
-              icon: const Icon(Icons.more_horiz),
-              onPressed: () {},
-            ),
-          ),
-
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              'Most of the advertisements like this in Addis Ababa are dangerous traps.',
-              style: TextStyle(fontSize: 15),
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          Container(
-            height: 250,
-            color: Colors.grey.shade300,
-            child: const Center(
-              child: Icon(Icons.image, size: 80, color: Colors.grey),
-            ),
-          ),
-
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12.0),
             child: Row(
-              children: const [
-                Icon(Icons.thumb_up, size: 16, color: Colors.blue),
-                SizedBox(width: 6),
-                Text('120'),
-                Spacer(),
-                Text('35 comments'),
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                    'https://i.pravatar.cc/150?u=${userName.replaceAll(' ', '')}',
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        userName,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        timeAgo,
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.more_horiz),
+                ),
               ],
             ),
           ),
-
-          Divider(height: 1),
-
-          // Action buttons
-          Row(
-            children: const [
-              _PostAction(icon: Icons.thumb_up_alt_outlined, label: 'Like'),
-              _PostAction(icon: Icons.chat_bubble_outline, label: 'Comment'),
-              _PostAction(icon: Icons.share_outlined, label: 'Share'),
-            ],
+          if (content.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Text(content),
+            ),
+          if (imageUrl != null) ...[
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
+              ),
+              child: Image.network(
+                imageUrl!,
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: progress.expectedTotalBytes != null
+                            ? progress.cumulativeBytesLoaded /
+                                  progress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.thumb_up, color: Colors.blue[700], size: 18),
+                    const SizedBox(width: 6),
+                    Text('$likes'),
+                    const SizedBox(width: 12),
+                    Icon(Icons.comment, color: Colors.grey[700], size: 18),
+                    const SizedBox(width: 6),
+                    Text('$comments'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    TextButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.thumb_up_alt_outlined, size: 18),
+                      label: const Text('Like'),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.comment_outlined, size: 18),
+                      label: const Text('Comment'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PostAction extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _PostAction({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        onTap: () {},
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 20, color: Colors.grey),
-              const SizedBox(width: 6),
-              Text(label),
-            ],
-          ),
-        ),
       ),
     );
   }
